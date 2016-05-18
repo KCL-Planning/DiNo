@@ -48,8 +48,8 @@ Assuming you are in the ex/linear-generator directory:
 
 ### Papers on DiNo and UPMurphi
 
-* Wiktor Piotrowski, Maria Fox, Derek Long, Daniele Magazzeni, Fabio Mercorio *"Heuristic Planning for PDDL+ Domains"* (2016) (Proceedings of 20th International Joint Conference on Artificial Intelligence (IJCAI 2016), 9-15/6/2016)
+* Wiktor Piotrowski, Maria Fox, Derek Long, Daniele Magazzeni, Fabio Mercorio *"Heuristic Planning for PDDL+ Domains"* (2016) (Proceedings of 25th International Joint Conference on Artificial Intelligence (IJCAI 2016), 9-15/6/2016)
 * Giuseppe Della Penna, Daniele Magazzeni, Fabio Mercorio *"A Universal Planning System for Hybrid Domains"* (2012) ( Applied Intelligence, vol. 36 n. 4, pp. 932 - 959, Springer DOI: 10.1007/s10489-011-0306-z	)
-* Giuseppe Della Penna, Benedetto Intrigila, Daniele Magazzeni, Fabio Mercorio *"A PDDL+ Benchmark Problem: The Batch Chemical Plant"* (2010) (Proceedings of 25th International Conference on Automated Planning and Scheduling (ICAPS 2010), 12-16/5/2010, pp. 222 - 225, AAAI Press)
+* Giuseppe Della Penna, Benedetto Intrigila, Daniele Magazzeni, Fabio Mercorio *"A PDDL+ Benchmark Problem: The Batch Chemical Plant"* (2010) (Proceedings of 20th International Conference on Automated Planning and Scheduling (ICAPS 2010), 12-16/5/2010, pp. 222 - 225, AAAI Press)
 * Giuseppe Della Penna, Benedetto Intrigila, Daniele Magazzeni, Fabio Mercorio *"UPMurphi: a Tool for Universal Planning on PDDL+ Problems"* (2009) (Proceedings of 19th International Conference on Automated Planning and Scheduling (ICAPS 2009), 19-23/9/2009, pp. 106 - 113, AAAI Press)
 

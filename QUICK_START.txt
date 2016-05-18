@@ -1,0 +1,38 @@
+To quickly begin using DiNo, follow these steps.
+
+1)  Make sure you have the required libraries: on Ubuntu you can simply issue 
+    the following command: 
+	
+	sudo apt-get install build-essential flex bison libc6-dev-i386 gcc-multilib g++-multilib. 
+	
+	Similar packages need to be installed in other Linux distributions as well 
+	as in Cygwin under Windows.
+	
+2)  If you want to use the VAL validator to automatically validate the 
+    generated plans, download and install it separately, then edit the Makefile 
+	in the "src/DiNo" folder and write the complete pathname of the 
+	"validate" binary as the value of the VAL_PATHNAME constant.
+	
+3)  Enter the "src" directory, call "make" and cross your fingers. 
+    If everything is ok, the dino compiler (dino) and the PDDL-to-Murphi 
+	compiler (pddl2upm) are now in the "bin" directory.
+
+4)  To compile a PDDL domain/problem to an DiNo planner, invoke the 
+    DiNo compiler (dino):
+
+	dino <domain.pddl> <problem.pddl>. 
+	
+	This will call several tools (including the g++ compiler) and generate 
+	the executable planner, called problem_planner(.exe), as well as other 
+	support and intermediate files.
+	
+	Warning: DiNo requires the PDDL+ domain to be typed for being 
+	processed. The only metric currently supported by DiNo is 
+	:minimize total-time.
+	
+5)  Once the executable planner has been generated, you can run it to start 
+    the planning process. By default, the planner will allocate 1Gb of memory, 
+	search for a feasible plan and write it to the file problem_plan.pddl.
+   
+    You can use the -h switch to see the complete list of available options.
+   

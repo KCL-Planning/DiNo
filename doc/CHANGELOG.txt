@@ -1,0 +1,31 @@
+3.02: Bug fix release (2015/05/04)
+
+[FIX] fixed issue about TIL/TIF check (now check the start state)
+[FIX] fixed issue within the “time-passing” rule (now the chain is (1) increase TIME variable, (2) check TIL/TIF, (3) check events/processes
+
+
+3.01: Bug fix release (2015/04/29)
+
+[FIX] Fixed an issue in comparing Real_type variable (eg, PDDL function type) 
+against TIME_type (ie, the type of variable TIME). This is due to the 
+comparison of two different types that the mu_real library does not support 
+well. We fixed this issue by forcing Durative-action clock variable to be 
+TIME_type rather than Real_type. As a drawback DiNo will spend more byte 
+in the state encoding, but the comparison will be safe.
+
+[FIX] The DAs_violate_duration() function - that allows DiNo to check 
+whether the duration of a Durative Action has been violated or not - 
+presents a bug when the duration is a conjunction of constraints (eg, 
+?duration >= 0 and ?duration <=100). Indeed, this function has been 
+intended to prune a DA that exceeds its duration bounds expressed as open 
+intervals or exact value (eg, ?duration < 100 ; ?duration = 100; 
+?duration <= 100), but it cannot deal with *closed* invervals. This is an
+interesting issue to be included in the next version of DiNo to improve 
+the performances. Actually, the bug has been fided by disabling the check 
+on DA having a duration constraint that is a closed interval.
+ 
+[FIX] Print function for real type (used with the PUT command for debug purposes).
+
+[FIX] "Error" states, detected as invariant violations during the exploration, are
+now more clearly marked as "invalid" states, since invariants can be used in
+DiNo to prune the exploration graph, not only to detect error states.

@@ -1,0 +1,266 @@
+DiNo compiler (dino) options
+------------------------------------------------
+
+You can pass several options to dino. Type dino --help for a full list.
+
+Note that dino will not recompile the domain/probelm (.pddl files)
+to the model (.m file) and/or the model in the source
+(.cpp file) if the former has not been updated since the last
+compilation. To force a recompilation, manually delete the source
+file or use the --force command line switch.
+
+If your model uses variable rule durations and weights (i.e., the duration 
+and/or weight of a rule depends also from the state the rule is applied on), 
+you MUST add the --varweight and/or --varduration switches. to notify the 
+planner of this. Otherwise, the planning results will be incorrect. Note that 
+each of these switches increase the planner memory and disk requirements, 
+so use them only if you need them!
+
+To create a debug-mode planner use the --debug switch.
+
+To override the default discretization used to compile the PDDL domain, 
+you can specify the --custom X Y switch, or the --prompt switch to enter 
+it interactively during the compilation process.
+
+Warning: DiNo requires the PDDL+ domain to be typed for being 
+processed. The only metric currently supported by DiNo is 
+:minimize total-time.
+
+
+
+DiNo planner options
+------------------------------------------------
+
+Here we list only the planning-related options (the same as in UPMurphi) with added heuristic options specifically for DiNo.
+Other options are the same as in CMurphi.
+
+General Options
+
+-noclear	do not delete working disk files.
+ If -noclear is NOT specified, the planner will remove all its temporary 
+ files from disk after its execution. You can use -noclear to save the 
+ planner files for further processing: these include a full (binary) dump 
+ of the plant states, the complete set of transitions, the inverted plant 
+ graph, the optimal actions chosen in each state, etc.
+
+-m<n>		give the planner n megabytes of memory default 1000).
+
+-val		validate plans
+ To use this option, VAL must be installed on your system and its path
+ configured in the DiNo makefile.
+
+Algorithm Options
+
+ The -search:* options set the planning algorithm to use:
+-search:f	create a feasible plan for each startstate (default).
+
+-cdl		check for deadlock.
+ Deadlock detection is DISABLED by default. You can activate it with -cdl.
+
+-l<n>		maximum bfs level (default: unlimited).
+ The number of BFS levels to explore can be specified through the -l option. 
+ If this option is set, the planner will work only on the states found on 
+ these levels, otherwise it will try to explore the entire domain before 
+ starting the optimisation and planning phases.
+ 
+-tl<n>		maximum plan length (default: unlimited).
+ You can use this option to limit the plans to a maximum number
+ of clock ticks. Plans longer than this limit will be ignored.
+ This option also limits the SRPG time horizon.
+
+-th<n>         SRPG time horizon limit (default: 100).
+ This option limits the Staged Relaxed Planning Graph to the given time point.
+ SRPG+ will return a heuristic value of infinity for a state if that time 
+ point is reached in the graph.
+
+Output Options
+
+-output <file>	write output in file (default: <problem_name>_plan.pddl).
+-print			also print output to console.
+ By default, final output is written to an output file <problem_name>_plan.pddl. 
+ If you want to specify a different filename, use the -output option. 
+ Using the option -print will cause such file to be copied to stdout, too.
+
+ Output formats, specified through the -format:* options, are:
+-format:pddl output plans in pddl format (default).
+-format:pddlv output plans in pddl format with verbose comments.
+-format:pddlvv output plans in pddl format with very verbose comments.
+-format:text output plans/actions in text format.
+-format:verbose output plans/actions in verbose text format.
+-format:raw output actions in binary format.
+-format:csv output actions in csv format.
+
+ pddl: standard PDDL plan format. This is the default
+ pddlv: PDDL plan format with comments that show the execution of "invisible 
+ actions" such as events, durative action terminations, clock ticks, etc.
+ pddlvv: as pddlv but, after each step, prints also a comment with the current 
+ domain variables value.
+ text: textual format useful for diagnostic purposes.
+ verbose: as text, but prints the system state after each step.
+ raw: prints the control actions in binary format. Useful to generate 
+ controllers instead of universal plans.
+ csv: prints the control actions in csv format. Each row contains the 
+ description of a state (i.e., the list of its variables) and the name of 
+ the rule to apply in such state. Values are separated by a colon. 
+ Warning: only variables marked with a pddlname are included is the state output!
+
+ 
+ 
+Debug planners
+------------------------------------------------
+
+If you compiled a debug mode planner, then it will stop every time a model 
+rule can be executed (i.e, an action can be taken, an event can occur, 
+the clock can tick, etc.) and ask the user if it should be actually fired, 
+displaying the rule name and the corresponding PDDL action/event name, if 
+available. You can then allow its execution writing y (yes, the default), 
+or deny the execution with n (no, in this case the planning will continue 
+as the rule was never encountered). You can also decide to always fire a 
+particular rule (answering a), or never fire it again (answering e).
+
+
+
+Short guide to the DiNo extended syntax
+(for advanced users only)
+------------------------------------------------
+
+DiNo extends the CMurphi description language syntax (see
+http://www.cs.utah.edu/formal_verification/Murphi and read the
+original Murphi_User_Manual included in this release for a complete
+reference to the CMurphi description language) with the following
+constructs.
+
+
+1) Global (state) variables and PDDL domain variables
+
+It is possible (although not required) to associate to some of the
+state variables (declared in the var section of the model) their
+"PDDL name". This marks such variables as "domain variables",
+whereas the other state variables will be "internal" (i.e., used for
+modelling purposes only) and will not appear in the PDDL output when
+state dump is requested (pddlvv format, see below). To this aim, add
+the "pddlname" attribute to the variable declaration as in the
+following example:
+
+daytime [pddlname: "daytime";] : real_type;
+
+
+
+2) Rule classes
+
+Rules must be marked with their "class", to allow correct handling
+of some PDDL+ features such as durative actions, as well as to
+measure the process and plan durations. Rule classes are identified
+by the keywords "clock", "action", "event", "durative_start",
+"durative_end" placed before the "rule" keyword. Moreover, it is
+possible (and sometimes required) to associate further attributes to
+each rule: pddlname, duration and weight. These attributes are
+placed immediately before the rule "begin".
+
+Classes "durative_start" and "durative_end" mark the rules that
+start and conclude, respectively, a durative action. The pddlname
+attribute is used to match each start with the corresponding end,
+thus it must have the same value on the "durative_start" and
+"durative_end" rules of the same durative action.
+
+Example:
+
+durative_end rule "observe2_end"
+(...) ==>
+pddlname: "observe2";
+begin
+		...
+end;
+
+durative_start rule "observe2_start"
+(...)  ==>
+pddlname: "observe2";
+begin
+		...
+end;
+
+The "clock" class makes the planner know what rule represents the
+time flow. In such a rule, the model must perform all the updates
+related to the time flow, such as executing active processes.
+
+Example:
+
+clock rule "time_passing"
+(...) ==>
+begin
+		...
+end;
+
+The "duration" attribute can be set to override the planner
+defaults. In particular, DiNo assumes that the clock rule has a
+duration of 1, whereas all the other rules are instantaneous
+(duration zero). Note: if a clock rule is not declared or a duration
+grater than zero is set on some rules, plan optimisation will give
+unexpected results.
+
+The "action" class corresponds to PDDL actions, and is the default
+class.
+
+Example:
+
+action rule "example_rule"
+(...)  ==>
+pddlname: "action1";
+duration: 3;
+weight: 10;
+begin
+		...
+end;
+
+The rule "weight" is used to optimize the plan. If not specified, it
+is set to the duration of the rule (i.e., optimization is performed
+on the plan length). Both duration and weight can be expressions, and
+such expressions can optionally make reference to the current state
+variables, to create state-and-rule-dependant weights and durations.
+However, in this case you MUST specify the --varweight and/or --varduration
+switches when compiling the planner.
+
+
+
+3) Invariants (errors)
+
+Invariants, if defined, tell the planner which states should be
+considered "erroneous" and thus must not be further explored. In
+other words, if a state violates an invariants, its next states will
+not be expanded.
+
+Example:
+
+invariant "everything going right"
+	(all_event_true);
+
+
+
+4) Metrics
+
+At the end of the model, you must specify the metrics to be used for
+optimization (if the planner is executed with the optimisation
+option). This can be done with one of the following expressions:
+
+metric: minimize;
+
+or
+
+metric: maximize;
+
+
+
+5) Goal
+
+The goal declaration, usually placed at the end of the model and
+immediately before the metric, is a boolean condition that is true
+on the states that meet the problem goal.
+
+Example:
+
+goal  " enjoy "
+	((observe_complete() & all_event_true));
+
+Note that it is possible to use function calls in the goal condition
+(as well as the invariant conditions described in the previous
+section).

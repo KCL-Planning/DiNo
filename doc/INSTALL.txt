@@ -1,0 +1,58 @@
+Installing and Using DiNo
+-------------------------------------------------------
+DiNo installation has been tested on the following platforms:
+
+ Recent Linux distributions (extensively tested on Ubuntu)
+ Windows with Cygwin (http://www.cygwin.com/)
+
+Important: DiNo planners make an extensive use of pointer arithmetic, 
+and have been originally developed for 32-bit systems, therefore they need 
+to be compiled using the -m32 g++ switch, which guarantees this precondition. 
+This is automatically performed by the DiNo compiler on 64-bit machines, 
+however you have to ensure that 32-bit C standard libraries are installed in 
+your system for the compilation process to be successful. See below for 
+detailed instructions. We are working for a 64-bit port of DiNo...
+
+Step 1 - Configuring the build
+
+In most cases, DiNo will be able to find its executables and include 
+files automatically. No configuration is required.
+However, the DiNo planners need a 32-bit platform to work properly. 
+To this aim, DiNo calls the g++ compiler with the -m32 switch on 64-bit
+machines but, for the compilation process to succeed, you need to ensure 
+the correct libraries are correctly installed on you 64-bit system. Otherwise, 
+you may receive strange error messages referring to system libraries such 
+as "iostream:38:28: fatal error: bits/c++config.h: No such file or directory".
+
+To successfully build DiNo and its planners, you need the following Ubuntu 
+packages (translating this requirement to the other platforms is left to the 
+reader as an exercise...): build-essential, flex, bison, libc6-dev-i386, 
+gcc-multilib, g++-multilib. The libc for i386 is often missing 
+on 64-bit machines. To ensure all the packages are installed or install the 
+missing ones, on Ubuntu you can simply issue the following command: 
+
+sudo apt-get install build-essential flex bison libc6-dev-i386 gcc-multilib g++-multilib. 
+
+Similar packages need to be installed in other Linux distributions as well as 
+in Cygwin under Windows.
+
+Finally, if you want to use the VAL validator to automatically validate the 
+generated plans, you should download and install it separately, then edit the 
+Makefile in the "src/DiNo" folder and write the complete pathname of the 
+"validate" binary as the value of the VAL_PATHNAME constant. 
+
+Step 2 - Compiling the DiNo binaries
+
+This step must be performed only once. To compile DiNo, the following tools 
+must be available (and updated) on your system:
+
+ g++ compiler
+ lex and yacc, or (better) their GNU replacements: flex and bison
+
+Enter the "src" directory, call "make" and cross your fingers. If everything 
+is ok, the DiNo compiler (dino) and the PDDL-to-Murphi compiler (pddl2upm) 
+are now in the "bin" directory.
+
+Now you are ready to create & execute planners for PDDL domains and problems.
+
+Enjoy!

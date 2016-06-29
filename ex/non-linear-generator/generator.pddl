@@ -16,7 +16,7 @@ tank)
 )
 (:durative-action generate
  :parameters (? g - gen )
- :duration (and (>= ? duration (- (runtime) 10) ) (<= ? duration (+ (runtime) 10) ))
+ :duration (= ? duration (runtime) )
  :condition ( over all (> ( gen_fuel_level ?g) 0) )
  :effect (and (decrease ( gen_fuel_level ? g) (* #t 1))
 		(at end ( generator_ran ?g))))

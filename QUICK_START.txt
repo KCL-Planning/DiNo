@@ -5,6 +5,8 @@ To quickly begin using DiNo, follow these steps.
 	
 	sudo apt-get install build-essential flex bison libc6-dev-i386 gcc-multilib g++-multilib. 
 	
+	ALERT: Flex 2.6 causes parser errors, use flex 2.5.39 instead.
+	
 	Similar packages need to be installed in other Linux distributions as well 
 	as in Cygwin under Windows.
 	

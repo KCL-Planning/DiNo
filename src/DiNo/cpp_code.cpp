@@ -1982,11 +1982,11 @@ const char *procdecl::generate_decl()
     	  for (stmt * sttt = body; sttt != NULL; sttt = sttt->next) {
 
 //    	  		std::cout << "\nPLUS == " << sttt->get_proc_code_plus() << std::endl;
-    		  sttt->get_proc_code_plus();
+    		  //sttt->get_proc_code_plus();
     		  pplus.append(sttt->get_proc_code_plus());
 
 //    	  		std::cout << "\nMINUS == " << sttt->get_proc_code_minus() << std::endl;
-    		  sttt->get_proc_code_minus();
+    		  //sttt->get_proc_code_minus();
     		  pminus.append(sttt->get_proc_code_minus());
 
     	  }
@@ -5602,15 +5602,15 @@ void make_print_world(ste * globals)
 		std::map< std::string, std::vector< std::pair< std::pair<std::string, std::string>, std::pair<int, int> > > >::iterator ip_minus;
 		for (ip_minus = processes_minus.begin(); ip_minus != processes_minus.end(); ++ip_minus){
 
-	//		std::cout << "\nLOOOOPING: \n" << (*ip).first << " ( ";
-	//		for (int ii = 0; ii < (*ip).second.size(); ii++){
-	//			std::cout << (*ip).second.at(ii).first.first << " " << (*ip).second.at(ii).first.second <<
-	//					"( " << (*ip).second.at(ii).second.first << "," << (*ip).second.at(ii).second.second << "), ";
-	//
-	//		}
-	//		std::cout << " ) " << std::endl;
+//			std::cout << "\nLOOOOPING: \n" << (*ip_minus).first << " ( ";
+//			for (int ii = 0; ii < (*ip_minus).second.size(); ii++){
+//				std::cout << (*ip_minus).second.at(ii).first.first << " " << (*ip_minus).second.at(ii).first.second <<
+//						"( " << (*ip_minus).second.at(ii).second.first << "," << (*ip_minus).second.at(ii).second.second << "), ";
+//
+//			}
+//			std::cout << " ) " << std::endl;
 
-	//		std::cout << "\nLOOOOPING: \n" << (*ip).first << " ( ";
+			//std::cout << "\nLOOOOPING: \n" << (*ip).first << " ( ";
 
 			if ((*ip_minus).first.size() > 1){
 
@@ -6866,7 +6866,7 @@ const char *program::generate_code()
   fprintf(codefile, "#define DISCRETIZATION %lf\n", discretization);
 #if defined(VAL_PATHNAME)
   fprintf(codefile, "#define VAL_PATHNAME \"%s\"\n", QUOTED_VALUE(VAL_PATHNAME));
-#endif  
+#endif
   fprintf(codefile, "#define BITS_IN_WORLD %d\n", bits_in_world);
   if (args->no_compression)
     fprintf(codefile, "#define ALIGN\n");
@@ -7019,4 +7019,3 @@ const char *program::generate_code()
 
   return "ERROR!";
 }
-

@@ -2435,6 +2435,9 @@ public:
 	;
 	virtual string toMurphi(int indent) {
 		operator_in_parsing = "process_" + this->name->name;
+
+		this->name->name = operator_in_parsing;		// WP WP WP WP WP adding "process_" to correct the process declarations.
+
 		string toReturn = "procedure " + this->name->name + " (";
 		if (!this->parameters->isEmpty()) {
 			vector<var_symbol*> temp = this->parameters->symbol_list();

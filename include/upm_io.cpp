@@ -426,7 +426,7 @@ void argclass::PrintInfo( void )
   if (print_license.value) PrintLicense();
 
   cout << "\n======================================================\n"
-       << "\nDiNo version 1.0\n"
+       << "\nDiNo version 1.1\n"
        << "Discretised Nonlinear Heuristic Planner for PDDL+ models with continous processes and events\n\n"
        << "Copyright (C) 2015\n"
        << "W. Piotrowski, M. Fox, D. Long, D. Magazzeni, F. Mercorio\n\n";

@@ -11,6 +11,8 @@
 #ifndef __STMT_H__
 #define __STMT_H__
 
+#include <string>
+
 /********************
   class stmt
   ********************/
@@ -25,8 +27,8 @@ class stmt:public TNode
   virtual const char *generate_code();
   virtual const char *get_target(){return "ERROR";}; // WP WP WP
   virtual const char *get_src(){return "ERROR";}; // WP WP WP
-  virtual const char *get_proc_code_plus(){return "ERROR";}; // WP WP WP
-  virtual const char *get_proc_code_minus(){return "ERROR";}; // WP WP WP
+  virtual std::string get_proc_code_plus(){return "ERROR";}; // WP WP WP
+  virtual std::string get_proc_code_minus(){return "ERROR";}; // WP WP WP
 };
 
 /********************
@@ -70,8 +72,8 @@ struct ifstmt:stmt {
   stmt *elsecode;
   ifstmt(expr * test, stmt * body, stmt * elsecode = NULL);
   virtual const char *generate_code();
-  virtual const char *get_proc_code_plus();
-  virtual const char *get_proc_code_minus();
+  virtual std::string get_proc_code_plus();
+  virtual std::string get_proc_code_minus();
 };
 
 

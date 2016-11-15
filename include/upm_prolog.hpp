@@ -79,7 +79,7 @@
 #define INCLUDE_FILE_DATE "Dec 8 2015"
 
 /* DiNo Version Number */
-#define INCLUDE_FILE_VERSION "DiNo Release 1.0"
+#define INCLUDE_FILE_VERSION "DiNo Release 1.1"
 
 /****************************************
   Cached Murphi constants

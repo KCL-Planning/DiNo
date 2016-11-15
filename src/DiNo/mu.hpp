@@ -14,7 +14,7 @@
 /*---------------------------------------------------------------------------*/
 /* Macro declarations                                                        */
 /*---------------------------------------------------------------------------*/
-#define DINO_VERSION "DiNo Release 1.0"
+#define DINO_VERSION "DiNo Release 1.1"
 #define MURPHI_VERSION "Universal Planner Murphi Release 3.0"
 
 #ifndef __DATE__		// To accomodate DEC's CC

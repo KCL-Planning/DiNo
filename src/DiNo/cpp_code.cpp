@@ -1908,7 +1908,8 @@ const char *constparam::generate_decl()
   return "ERROR!";
 }
 
-
+std::map<std::string,expr*> global_test_minus;
+std::map<std::string,expr*> global_test_plus;
 
 /********************
   code for procdecl
@@ -1948,7 +1949,7 @@ const char *procdecl::generate_decl()
     	  prms.push_back(std::make_pair(std::make_pair(p->getvalue()->gettype()->mu_name, p->getvalue()->mu_name), std::make_pair(p->value->gettype()->getleft(), p->value->gettype()->getright())));
     	}
 
-        p->getvalue()->generate_decl();
+        p->getvalue()->generate_decl(); // adds parameters to the function declaration
         if (p->getnext() == NULL)
           break;
         fprintf(codefile, ", ");
@@ -1982,12 +1983,25 @@ const char *procdecl::generate_decl()
     	  for (stmt * sttt = body; sttt != NULL; sttt = sttt->next) {
 
 //    	  		std::cout << "\nPLUS == " << sttt->get_proc_code_plus() << std::endl;
+
+
+//    		  global_test_plus.push_back(((ifstmt*)sttt)->test);
+    		  std::string pp = sttt->get_proc_code_plus();
+
     		  sttt->get_proc_code_plus();
-    		  pplus.append(sttt->get_proc_code_plus());
+//    		  pplus.append(decls->generate_decls());
+    		  pplus.append(pp);
+    		  global_test_plus.insert(std::make_pair(pplus,(((ifstmt*)sttt)->test)));
 
 //    	  		std::cout << "\nMINUS == " << sttt->get_proc_code_minus() << std::endl;
+
+//    		  global_test_minus.push_back(((ifstmt*)sttt)->test);
+    		  std::string pm = sttt->get_proc_code_minus();
+
     		  sttt->get_proc_code_minus();
-    		  pminus.append(sttt->get_proc_code_minus());
+//    		  pminus.append(decls->generate_decls());
+    		  pminus.append(pm);
+    		  global_test_minus.insert(std::make_pair(pminus,(((ifstmt*)sttt)->test)));
 
     	  }
 
@@ -2893,16 +2907,23 @@ const char *ifstmt::generate_code()
 }
 
 
+
+
 /*
  * WP WP WP WP WP WP WP WP WP WP WP WP
  * get the effects of an action/process (fact names)
  */
-const char *ifstmt::get_proc_code_plus()
+std::string ifstmt::get_proc_code_plus()
 {
-	  std::string proc_pluses = "\n	if (";
 
-	  proc_pluses.append(test->generate_code());
-	  proc_pluses.append(")\n	{\n");
+	  std::string proc_pluses = "\n";
+//	  std::string proc_pluses = "\n	if ( ";
+
+//	  proc_pluses.append(test->generate_code());
+
+
+
+	  proc_pluses.append("\n	{\n");
 
 	  for (stmt * s = body; s != NULL; s = s->next){
 
@@ -2910,8 +2931,12 @@ const char *ifstmt::get_proc_code_plus()
 		  std::string ptarget(s->get_target());
 
 		  if ( ptarget.find("ERROR") == std::string::npos && psrc.find("ERROR") == std::string::npos &&
-				  (psrc.find("increase") != std::string::npos ||  psrc.find("+") != std::string::npos) )
+				  (psrc.find("increase") != std::string::npos ||  psrc.find("+") != std::string::npos) ){
+
+//			  	  	  std::cout << "THIS IS THE PLUS CODE:" << ptarget << " = " << psrc << std::endl;
+
 			  	  	  proc_pluses.append(("		" + ptarget + " = " + psrc + "; \n"));
+		  }
 	  }
 	  proc_pluses.append("	}\n");
 	  if (elsecode != NULL) {
@@ -2920,37 +2945,60 @@ const char *ifstmt::get_proc_code_plus()
 //	      s->generate_code();
 	    proc_pluses.append("\n}\n");
 	  }
-	  return proc_pluses.c_str();
+
+
+//	  std::cout << "\n\n WHOLE PLUS PROCESSES" << proc_pluses.c_str() << std::endl;
+
+
+	  return proc_pluses;
 }
+
+
 
 /*
  * WP WP WP WP WP WP WP WP WP WP WP WP
  * get the effects of an action/process (fact names)
  */
-const char *ifstmt::get_proc_code_minus()
+std::string ifstmt::get_proc_code_minus()
 {
-	  std::string proc_pluses = "\n	if (";
 
-	  proc_pluses.append(test->generate_code());
-	  proc_pluses.append(")\n	{\n");
+
+	  std::string proc_minuses = "\n";
+
+//	  WP WP WP WP WP COMMENTED OUT FOR TESTING
+//	  global_test_minus.push_back(test);
+
+//	  std::string proc_minuses = "\n	if ( ";
+
+//	  proc_minuses.append(test->generate_code());
+
+
+	  proc_minuses.append("\n	{\n");
 
 	  for (stmt * s = body; s != NULL; s = s->next){
 
 		  std::string psrc(s->get_src());
 		  std::string ptarget(s->get_target());
 
+
 		  if ( ptarget.find("ERROR") == std::string::npos && psrc.find("ERROR") == std::string::npos &&
-				  (psrc.find("decrease") != std::string::npos ||  psrc.find("-") != std::string::npos) )
-			  	  	  proc_pluses.append(("		" + ptarget + " = " + psrc + "; \n"));
+				  (psrc.find("decrease") != std::string::npos ||  psrc.find("-") != std::string::npos) ){
+
+//			  	  	  std::cout << "THIS IS THE MINUS CODE:" << ptarget << " = " << psrc << std::endl;
+			  	  	  proc_minuses.append(("		" + ptarget + " = " + psrc + "; \n"));
+		  }
 	  }
-	  proc_pluses.append("	}\n");
+	  proc_minuses.append("	}\n");
 	  if (elsecode != NULL) {
-	    proc_pluses.append("else\n{\n");
+		  proc_minuses.append("else\n{\n");
 	    for (stmt * s = elsecode; s != NULL; s = s->next)
 //	      s->generate_code();
-	    proc_pluses.append("}\n");
+	    	proc_minuses.append("}\n");
 	  }
-	  return proc_pluses.c_str();
+
+//	  std::cout << "\n\n WHOLE MINUS PROCESSES" << proc_minuses.c_str() << std::endl;
+
+	  return proc_minuses;
 }
 
 
@@ -5548,6 +5596,7 @@ void make_print_world(ste * globals)
 		"void world_class::fire_processes_plus()\n"
 		"{\n");
 		std::map< std::string, std::vector< std::pair< std::pair<std::string, std::string>, std::pair<int, int> > > >::iterator ip_plus;
+
 		for (ip_plus = processes_plus.begin(); ip_plus != processes_plus.end(); ++ip_plus){
 
 	//		std::cout << "\nLOOOOPING: \n" << (*ip).first << " ( ";
@@ -5560,7 +5609,7 @@ void make_print_world(ste * globals)
 
 	//		std::cout << "\nLOOOOPING: \n" << (*ip).first << " ( ";
 
-			if ((*ip_plus).first.size() > 1){
+			if ((*ip_plus).first.size() >= 1){
 
 				for (int ii = 0; ii < (*ip_plus).second.size(); ii++){
 
@@ -5571,11 +5620,13 @@ void make_print_world(ste * globals)
 
 				}
 
-				fprintf(codefile, "{");
+				fprintf(codefile, "{\n\n");
+
+				fprintf(codefile, "\n\n if (%s) \n", global_test_plus[(*ip_plus).first]->generate_code());// WP WP WP WP WP
 
 				fprintf(codefile, "%s", (*ip_plus).first.c_str() );
 
-				fprintf(codefile, "}\n");
+				fprintf(codefile, "\n\n}\n");
 
 	//			fprintf(codefile, "			%s_plus(", (*ip_plus).first.c_str() );
 	//
@@ -5612,7 +5663,7 @@ void make_print_world(ste * globals)
 
 	//		std::cout << "\nLOOOOPING: \n" << (*ip).first << " ( ";
 
-			if ((*ip_minus).first.size() > 1){
+			if ((*ip_minus).first.size() >= 1){
 
 				for (int ii = 0; ii < (*ip_minus).second.size(); ii++){
 
@@ -5624,11 +5675,14 @@ void make_print_world(ste * globals)
 				}
 
 
-				fprintf(codefile, "{");
+				fprintf(codefile, "{\n\n");
+
+				fprintf(codefile, "\n\n if (%s) \n", global_test_minus[(*ip_minus).first]->generate_code());// WP WP WP WP WP
+
 
 				fprintf(codefile, "%s", (*ip_minus).first.c_str() );
 
-				fprintf(codefile, "}\n");
+				fprintf(codefile, "\n\n}\n");
 
 
 	//			fprintf(codefile, "			%s_minus(", (*ip_minus).first.c_str() );

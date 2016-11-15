@@ -557,8 +557,16 @@ void OutputManager::WritePlans()
     fprintf(target,"; ---------------------------------------\n");
     for(iplan=1; iplan<lplan; ++iplan) {
       //ACTIONS
+     // if (Rules->RulePDDLClass(plan[iplan].rule) == RuleManager::Action) {
+     //  if (first_happening_added && (CheckInterference(plan[iplan-1].rule, plan[iplan].rule)== true)) time += EPSILON_TIME_SEPARATION; //separation  // WP WP WP WP WP if the previous action interferes with the current action - add epsilon
+	//	    else first_happening_added=true;
+
+
       if (Rules->RulePDDLClass(plan[iplan].rule) == RuleManager::Action) {
-        if (first_happening_added && (CheckInterference(plan[iplan-1].rule, plan[iplan].rule)== true)) time += EPSILON_TIME_SEPARATION; //separation  // WP WP WP WP WP if the previous action interferes with the current action - add epsilon
+        if (first_happening_added && ((CheckInterference(plan[iplan-1].rule, plan[iplan].rule)== true) ||
+        		(Rules->RulePDDLClass(plan[iplan-1].rule) == RuleManager::Action) ||
+        				(Rules->RulePDDLClass(plan[iplan-1].rule) == RuleManager::DurativeStart)))
+        					time += EPSILON_TIME_SEPARATION; //separation
 		    else first_happening_added=true;
 
         fprintf(target,"%0.3f: %s [%0.3f]",time,Rules->RulePDDLName(plan[iplan].rule),(double)DISCRETIZATION *(double)
@@ -579,8 +587,15 @@ void OutputManager::WritePlans()
         }
         fprintf(target,"\n");
         //DURATIVE ACTIONS
-      } else if (Rules->RulePDDLClass(plan[iplan].rule) == RuleManager::DurativeStart) {
-        if (first_happening_added && (CheckInterference(plan[iplan-1].rule, plan[iplan].rule)== true)) time += EPSILON_TIME_SEPARATION; //separation	// WP WP WP WP WP if the previous action interferes with the current action - add epsilon
+      } //else if (Rules->RulePDDLClass(plan[iplan].rule) == RuleManager::DurativeStart) {
+        //if (first_happening_added && (CheckInterference(plan[iplan-1].rule, plan[iplan].rule)== true)) time += EPSILON_TIME_SEPARATION; //separation	// WP WP WP WP WP if the previous action interferes with the current action - add epsilon
+    		//else first_happening_added=true;
+
+else if (Rules->RulePDDLClass(plan[iplan].rule) == RuleManager::DurativeStart) {
+          if (first_happening_added && ((CheckInterference(plan[iplan-1].rule, plan[iplan].rule)== true) ||
+          		(Rules->RulePDDLClass(plan[iplan-1].rule) == RuleManager::Action) ||
+          				(Rules->RulePDDLClass(plan[iplan-1].rule) == RuleManager::DurativeStart)))
+        	  	  	  	  	  time += EPSILON_TIME_SEPARATION; //separation
     		else first_happening_added=true;
 
         dur =

@@ -446,83 +446,13 @@ double upm_staged_rpg::compute_rpg(){
 		StateCopy(workingstate, next_rpg_state_upper);
 		workingstate->fire_processes_plus(1);
 		mu_event_check();
-
-		state* ust_temp = new state(workingstate);
-		StateCopy(workingstate, temporal_layers[temporal_layers.size()-1].first.second);
-
-		std::vector<mu_0_boolean*> upv_temp = workingstate->get_mu_bools();
-		std::vector<mu_0_boolean*> upv_tempp = workingstate->get_mu_bool_arrays();
-		upv_temp.insert(upv_temp.end(), upv_tempp.begin(), upv_tempp.end());
-
-		std::vector<mu__real*> upv_temp2 = workingstate->get_mu_nums();
-		std::vector<mu__real*> upv_tempp2 = workingstate->get_mu_num_arrays();
-		upv_temp2.insert(upv_temp2.end(), upv_tempp2.begin(), upv_tempp2.end());
-
-		StateCopy(workingstate, ust_temp);
-
-		std::vector<mu_0_boolean*> uv_temp = workingstate->get_mu_bools();
-		std::vector<mu_0_boolean*> uv_tempp = workingstate->get_mu_bool_arrays();
-		uv_temp.insert(uv_temp.end(), uv_tempp.begin(), uv_tempp.end());
-
-		for(int ibfl = 0; ibfl < uv_temp.size(); ibfl++)
-		{
-			if ((uv_temp.at(ibfl)->value()==false) && (upv_temp.at(ibfl)->value()==true)){
-				uv_temp.at(ibfl)->value(true);
-			}
-		}
-
-		std::vector<mu__real*> uv_temp2 = workingstate->get_mu_nums();
-		std::vector<mu__real*> uv_tempp2 = workingstate->get_mu_num_arrays();
-		uv_temp2.insert(uv_temp2.end(), uv_tempp2.begin(), uv_tempp2.end());
-
-		for(int infl = 0; infl < uv_temp2.size(); infl++)
-		{
-			if (uv_temp2.at(infl)->value() < upv_temp2.at(infl)->value()){
-				uv_temp2.at(infl)->value(upv_temp2.at(infl)->value());
-			}
-		}
-
 		StateCopy(next_rpg_state_upper, workingstate);
+
+
 
 		StateCopy(workingstate, next_rpg_state_lower);
 		workingstate->fire_processes_minus(1);
 		mu_event_check();
-
-		state* lst_temp = new state(workingstate);
-		StateCopy(workingstate, temporal_layers[temporal_layers.size()-1].first.first);
-
-		std::vector<mu_0_boolean*> lpv_temp = workingstate->get_mu_bools();
-		std::vector<mu_0_boolean*> lpv_tempp = workingstate->get_mu_bool_arrays();
-		lpv_temp.insert(lpv_temp.end(), lpv_tempp.begin(), lpv_tempp.end());
-
-		std::vector<mu__real*> lpv_temp2 = workingstate->get_mu_nums();
-		std::vector<mu__real*> lpv_tempp2 = workingstate->get_mu_num_arrays();
-		lpv_temp2.insert(lpv_temp2.end(), lpv_tempp2.begin(), lpv_tempp2.end());
-
-		StateCopy(workingstate, lst_temp);
-
-		std::vector<mu_0_boolean*> lv_temp = workingstate->get_mu_bools();
-		std::vector<mu_0_boolean*> lv_tempp = workingstate->get_mu_bool_arrays();
-		lv_temp.insert(lv_temp.end(), lv_tempp.begin(), lv_tempp.end());
-
-		for(int ifl = 0; ifl < lv_temp.size(); ifl++)
-		{
-			if ((lv_temp.at(ifl)->value()==false) && (lpv_temp.at(ifl)->value()==true)){
-				lv_temp.at(ifl)->value(true);
-			}
-		}
-
-		std::vector<mu__real*> lv_temp2 = workingstate->get_mu_nums();
-		std::vector<mu__real*> lv_tempp2 = workingstate->get_mu_num_arrays();
-		lv_temp2.insert(lv_temp2.end(), lv_tempp2.begin(), lv_tempp2.end());
-
-		for(int infl = 0; infl < lv_temp2.size(); infl++)
-		{
-			if (lv_temp2.at(infl)->value() > lpv_temp2.at(infl)->value()){
-				lv_temp2.at(infl)->value(lpv_temp2.at(infl)->value());
-			}
-		}
-
 		StateCopy(next_rpg_state_lower, workingstate);
 
 		state* trpg_l = new state(next_rpg_state_lower);

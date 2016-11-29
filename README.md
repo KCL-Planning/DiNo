@@ -9,7 +9,7 @@ DiNo has been developed as an extension of UPMurphi.
 ## Quick Start
 
 
-1. **Dependencies check** Make sure you have the required libraries: on Ubuntu you can simply issue the following command: `sudo apt-get install build-essential flex bison libc6-dev-i386 gcc-multilib g++-multilib`. Similar packages need to be installed in other Linux distributions as well as in Cygwin under Windows.
+1. **Dependencies check** Make sure you have the required libraries: on Ubuntu you can simply issue the following command: `sudo apt-get install build-essential flex bison libc6-dev-i386 gcc-multilib g++-multilib byacc`. Similar packages need to be installed in other Linux distributions as well as in Cygwin under Windows.
     **Note that by default Ubuntu16.04 uses flex 2.6 which causes errors when parsing the model. Revert Flex to 2.5.39 to avoid the issue.**
 
 2. **Download DiNo** Download the latest DiNo distribution package

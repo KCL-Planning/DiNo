@@ -14,11 +14,11 @@ DiNo has been developed as an extension of UPMurphi.
     **Note that by default Ubuntu16.04 uses flex 2.6 which causes errors when parsing the model. Revert Flex to 2.5.39 to avoid the issue.**
 
 2. **Download DiNo** Download the latest DiNo distribution package
-`git clone https://github.com/wmp9/DiNo-Plan`
+`git clone https://github.com/KCL-Planning/DiNo`
 3. **Compile DiNo** Type the following in the DiNo directory:
 `cd src` followed by `make`.
 If everything is ok, the DiNo compiler (dino) and the PDDL-to-Murphi compiler (pddl2upm) are now in the "bin" directory. 
-4. **Discretise your PDDL+ Model** From the main DiNo directory invoke (dino): `dino <domain.pddl> <problem.pddl>` This will call several tools (including the g++ compiler) and generate the executable planner, called problem_planner(.exe), as well as other support and intermediate files. For example:
+4. **Discretise your PDDL+ Model** From the main DiNo directory invoke (dino): `bin/dino <domain.pddl> <problem.pddl>` This will call several tools (including the g++ compiler) and generate the executable planner, called problem_planner(.exe), as well as other support and intermediate files. For example:
 `cd ex/linear-generator` and `../../bin/dino generator.pddl prob01.pddl`
 5. **Plan** Once the executable planner has been generated, you can run it to start the planning process. By default, the planner will allocate 1Gb of memory, search for a feasible plan and write it to the file problem_plan.ddl. Example:
 `./generator_planner`

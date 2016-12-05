@@ -498,6 +498,13 @@ void state_queue::enqueue(state * &e, unsigned long index)
 	  StateCopy(workingstate, &(stateArray[stateArrayIndex].s));
 	  f_head_end = workingstate->get_f_val();
   }
+
+  double f_tail_front = -1;
+  if (num_elts_tail > 0){
+	  StateCopy(workingstate, &(stateArray[tail_begin + rear].s));
+	  f_tail_front = workingstate->get_f_val();
+  }
+
 //  cout << "\nHEAD END F VALUE: " << f_head_end << endl;
 //  cout << "STATE ARRAY INDEX: " << stateArrayIndex << endl;
 
@@ -525,7 +532,7 @@ void state_queue::enqueue(state * &e, unsigned long index)
 //	cout << "\n\n\n\nHELPFUL ACTION HIT: " << Rules->LastRuleName() << endl;
 //  }
 
-   if ((num_elts_tail == 0 && num_elts_head == 0) || (e_f >= f_head_end || num_elts_head == 0)) {
+   if ((mu_TIME > args->SRPG_horizon.value) || (num_elts_tail == 0 && num_elts_head == 0) || (e_f >= f_head_end || num_elts_head == 0)) { // WP WP WP WP WP EDIT: added condition for exceeding the SRPG temporal horizon
 
 		  StateCopy(&(stateArray[tail_begin + rear].s), e);
 		  stateArray[tail_begin + rear].i = index;
@@ -592,7 +599,7 @@ void state_queue::enqueue(state * &e, unsigned long index)
 		}
 	}
 
-  else if ((head_begin+front > 0) && (num_elts_head > 0) && (f_head_end >= 0) && (e_f <= f_head_end || e_h == 0)){
+  else if ((head_begin+front > 0) && (num_elts_head > 0) && (f_head_end >= 0) && (e_f <= f_head_end || e_h == 0)){ // WP EDIT
 
 	  StateCopy(&(stateArray[head_begin + front-1].s), e);
 	  stateArray[head_begin + front-1].i = index;
@@ -702,7 +709,7 @@ void state_queue::enqueue(state * &e, unsigned long index)
 //				  cout << (head_begin+front+num_elts_head-(ix)) << endl;
 //				  cout << (head_begin+front+num_elts_head-(ix+1)) << endl;
 
-				  if ((f1 < f2) || ((f1 == f2) && (h1 < h2))){
+				  if ((f1 < f2) || ((f1 == f2) && (h1 < h2))){ // WP NEEDS EDIT?
 
 					  StateCopy(workingstate, &(stateArray[head_begin+front+num_elts_head-ix].s));
 

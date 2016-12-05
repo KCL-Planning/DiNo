@@ -773,7 +773,6 @@ RuleManager::AllNextStates(setofrules * fire)
 
 					if ((*its) == 0 || (*its) > numrules || Rules->generator->Condition(*its) != true) continue;
 						if (Rules->generator->PDDLClass(*its) == RuleManager::DurativeEnd && ((Rules->generator->get_clocks(*its).size()) > 0) && ((Rules->generator->get_clocks(*its).begin())->second <= 0)) {
-							cout << "\nSHIIIIIIIIIIIT \n\n" << endl;
 							continue; // WP WP WP CHECKING FOR 0 DURATION ACTIONS
 						}
 					what_rule = (*its);
@@ -1222,23 +1221,44 @@ RuleManager::HeuristicNextState()
 		  // get next state
 		#ifdef HASHC
 		  if (args->trace_file.value) {
-			workingstate->previous.set(NumCurState);
-			workingstate->set_h_val();
-//			workingstate->set_g_val(workingstate->previous.get_sp()->get_g_val()+1);
-			workingstate->set_g_val(0);
-			workingstate->get_f_val();
+			  if (mu_TIME > args->SRPG_horizon.value){
+				workingstate->previous.set(NumCurState);
+				workingstate->set_h_val(999);
+	//			workingstate->set_g_val(workingstate->previous.get_sp()->get_g_val()+1);
+				workingstate->set_g_val(0);
+				workingstate->get_f_val();
+//				cout << "\nHEURISTIC NS SETTING h(s)=999 with horizon " << args->SRPG_horizon.value << "\n" << endl;
+			  } else {
+					workingstate->previous.set(NumCurState);
+					workingstate->set_h_val();
+		//			workingstate->set_g_val(workingstate->previous.get_sp()->get_g_val()+1);
+					workingstate->set_g_val(0);
+					workingstate->get_f_val();
+//					cout << "\nHEURISTIC NS SETTING h(s)=0\n" << endl;
+			  }
 
 //			cout << "HNS H VALUE: " << workingstate->get_h_val() << endl;
 			//TODO: F value add
 		  } else
 		#endif
 		   {
-			 workingstate->previous.set(curstate);
-			 workingstate->set_h_val();
-//			 workingstate->set_g_val(workingstate->previous.get_sp()->get_g_val()+1);
-			 workingstate->set_g_val(0);
-			 workingstate->set_f_val();
 
+			  if(mu_TIME > args->SRPG_horizon.value){
+				 workingstate->previous.set(curstate);
+				 workingstate->set_h_val(999);
+	//			 workingstate->set_g_val(workingstate->previous.get_sp()->get_g_val()+1);
+				 workingstate->set_g_val(0);
+				 workingstate->set_f_val();
+//				 cout << "\nHEURISTIC NS SETTING h(s)=999 with horizon " << args->SRPG_horizon.value << "\n" << endl;
+			  } else {
+
+				 workingstate->previous.set(curstate);
+				 workingstate->set_h_val();
+	//			 workingstate->set_g_val(workingstate->previous.get_sp()->get_g_val()+1);
+				 workingstate->set_g_val(0);
+				 workingstate->set_f_val();
+//				 cout << "\nHEURISTIC NS SETTING h(s)=0\n" << endl;
+			  }
 //			 cout << "HNS H VALUE: " << workingstate->get_h_val() << endl;
 			 //TODO: F value add
 		   }
@@ -1293,21 +1313,39 @@ RuleManager::NextState()
 		  // get next state
 		#ifdef HASHC
 		  if (args->trace_file.value) {
-		    workingstate->previous.set(NumCurState);
-		    workingstate->set_h_val(workingstate->previous.get_sp()->get_h_val()+1);
-//		  	workingstate->set_g_val(workingstate->previous.get_sp()->get_g_val()+1);
-			workingstate->set_g_val(0);
-		    workingstate->get_f_val();
-		    //TODO: F value add
+			  if (mu_TIME > args->SRPG_horizon.value){
+				workingstate->previous.set(NumCurState);
+				workingstate->set_h_val(999);
+	//			workingstate->set_g_val(workingstate->previous.get_sp()->get_g_val()+1);
+				workingstate->set_g_val(0);
+				workingstate->get_f_val();
+//				cout << "\nREGULAR NS SETTING h(s)=999\n" << endl;
+			  } else {
+				workingstate->previous.set(NumCurState);
+				workingstate->set_h_val(workingstate->previous.get_sp()->get_h_val()+1);
+	//		  	workingstate->set_g_val(workingstate->previous.get_sp()->get_g_val()+1);
+				workingstate->set_g_val(0);
+				workingstate->get_f_val();
+				//TODO: F value add
+			  }
 		  } else
 		#endif
 		   {
-			 workingstate->previous.set(curstate);
-		     workingstate->set_h_val(workingstate->previous.get_sp()->get_h_val()+1);
-//		   	 workingstate->set_g_val(workingstate->previous.get_sp()->get_g_val()+1);
-			 workingstate->set_g_val(0);
-			 workingstate->set_f_val();
-			 //TODO: F value add
+			  if (mu_TIME > args->SRPG_horizon.value){
+				workingstate->previous.set(curstate);
+				workingstate->set_h_val(999);
+	//			workingstate->set_g_val(workingstate->previous.get_sp()->get_g_val()+1);
+				workingstate->set_g_val(0);
+				workingstate->get_f_val();
+//				cout << "\nREGULAR NS SETTING h(s)=999\n" << endl;
+			  } else {
+				 workingstate->previous.set(curstate);
+				 workingstate->set_h_val(workingstate->previous.get_sp()->get_h_val()+1);
+	//		   	 workingstate->set_g_val(workingstate->previous.get_sp()->get_g_val()+1);
+				 workingstate->set_g_val(0);
+				 workingstate->set_f_val();
+				 //TODO: F value add
+			  }
 		   }
 
 		  // print verbose message

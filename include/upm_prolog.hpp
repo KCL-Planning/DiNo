@@ -128,6 +128,19 @@ class mu_1_real_type;
 //std::set<int> helpful_actions;
 std::map<state*, std::set<int> > helpful_actions; // WP WP WP WP WP creating a map of tuples: state pointer and a set helpful actions for that state
 
+// returns count of non-overlapping occurrences of 'sub' in 'str'
+int countSubstring(const std::string& str, const std::string& sub)
+{
+	if (sub.length() == 0) return 0;
+	int count = 0;
+	for (size_t offset = str.find(sub); offset != std::string::npos;
+	offset = str.find(sub, offset + sub.length()))
+	{
+		++count;
+	}
+	return count;
+}
+
 
 /****************************************
   real numbers extension

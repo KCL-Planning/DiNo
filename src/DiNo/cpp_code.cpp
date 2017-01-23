@@ -4059,7 +4059,6 @@ if (ff_enabled == true){
    *
    * returns grounded numeric preconditions as a map in the format <variable*, <condition value, condition operator index> >
    *
-   *
    */
 
   // generate array of numeric preconditions(r)
@@ -4195,19 +4194,45 @@ if (ff_enabled == true){
 
 
   std::map<std::string, std::pair<std::string, int> >::iterator it33;
+  int pre_idx = 0;
   for (it33=precondmap.begin(); it33!=precondmap.end(); ++it33){
 
-		  fprintf(codefile, " 	if (std::string(typeid(%s).name()).compare(\"14mu_1_real_type\") == 0)\n"
-				  	  	  	"			preconds.insert(std::make_pair(&(%s), std::make_pair(%s, %d))); \n", it33->first.c_str(), it33->first.c_str(), it33->second.first.c_str(), it33->second.second  );
-  }
 
+
+	  	  if ((it33->first.find("+") != std::string::npos) || (it33->first.find("-") != std::string::npos) ||
+	  			  (it33->first.find("*") != std::string::npos) || (it33->first.find("/") != std::string::npos)){
+
+	  		pre_idx++;
+
+			  fprintf(codefile,	"	mu_dummy_expr_%d.value(%s);\n"
+					  	  	  	"	if (std::string(typeid(%s).name()).compare(\"d\") == 0){\n"
+					  	  	  	"			preconds.insert(std::make_pair(&(mu_dummy_expr_%d), std::make_pair(%s, %d))); \n"
+//					  	  	  	"			std::cout << \"\\n\\n\\n\\n =================================\\n THIS IS A DUMMY VAR IN NUM PRECONDITION \\n \" << mu_dummy_expr_%d.value() << \"\\n\\n\" << std::endl;\n"
+					  	  	  	"	} \n", pre_idx, it33->first.c_str(), it33->first.c_str(), pre_idx, it33->second.first.c_str(), it33->second.second, pre_idx  );
+
+	  	  }
+
+	  	  else {
+
+		  fprintf(codefile, " 	if (std::string(typeid(%s).name()).compare(\"14mu_1_real_type\") == 0){\n"
+				  	  	  	"			preconds.insert(std::make_pair(&(%s), std::make_pair(%s, %d))); \n"
+				  	  	  	"	} \n", it33->first.c_str(), it33->first.c_str(), it33->second.first.c_str(), it33->second.second  );
+
+	  	  }
+
+
+  }
 
   fprintf(codefile, "\n    return preconds;\n");
   fprintf(codefile, "  }\n" "\n");
 
 
+  for (int pre_dec = 1; pre_dec <= pre_idx; pre_dec++){
 
+	  fprintf(codefile, "  mu_1_real_type mu_dummy_expr_%d;\n", pre_dec);
 
+  }
+  fprintf(codefile, "\n\n");
 
 
   /*
@@ -4230,8 +4255,44 @@ if (ff_enabled == true){
   std::map<std::string, std::pair<std::string, int> >::iterator it66;
   for (it66=precondmap.begin(); it66!=precondmap.end(); ++it66){
 
-		  fprintf(codefile, " 	if (std::string(typeid(%s).name()).compare(\"14mu_1_real_type\") == 0)\n"
-				  	  	  	"			preconds.push_back(&(%s)); \n", it66->first.c_str(), it66->first.c_str());
+	  	  std::string jam = (it66->first.c_str());
+
+
+	  	  if (jam.find("+") != std::string::npos || jam.find("-") != std::string::npos ||
+	  			  jam.find("*") != std::string::npos || jam.find("/") != std::string::npos ){
+
+	  		  std::replace(jam.begin(), jam.end(), '(', ' ');
+	  		  std::replace(jam.begin(), jam.end(), ')', ' ');
+
+	  		  std::set<std::string> pre_expr;
+
+	  		  std::size_t prev_pos = 0, pos;
+	  		    while ((pos = jam.find_first_of("+-*/", prev_pos)) != std::string::npos)
+	  		    {
+	  		        if (pos > prev_pos)
+	  		            pre_expr.insert(jam.substr(prev_pos, pos-prev_pos));
+	  		        prev_pos= pos+1;
+	  		    }
+	  		    if (prev_pos< jam.length())
+	  		    	pre_expr.insert(jam.substr(prev_pos, std::string::npos));
+
+	  		  std::set<std::string>::iterator jam_it;
+	  		  for (jam_it=pre_expr.begin(); jam_it!=pre_expr.end(); ++jam_it){
+	  			  if (jam_it->find("mu_") != std::string::npos){
+	  				  fprintf(codefile, " 	if (std::string(typeid(%s).name()).compare(\"14mu_1_real_type\") == 0)\n"
+	  						  	  "			preconds.push_back(&(%s)); \n", jam_it->c_str(), jam_it->c_str());
+	  			  }
+	  		  }
+
+//	  		  fprintf(codefile, " 	if (std::string(typeid(%s).name()).compare(\"14mu_1_real_type\") == 0)\n"
+//	  			  		"			preconds.push_back(&(%s)); \n", jam.c_str(), jam.c_str());
+
+	  	  }
+	  	  else {
+
+	  		  fprintf(codefile, " 	if (std::string(typeid(%s).name()).compare(\"14mu_1_real_type\") == 0)\n"
+	  				  	  "			preconds.push_back(&(%s)); \n", jam.c_str(), jam.c_str());
+	  	  }
   }
 
 
@@ -4424,13 +4485,13 @@ if (ff_enabled == true){
 //      std::cout << "\n-----------------------------------------------------------\n\nTEMPORAL CONSTRAINTS: \n\n" << std::endl;
 
 
-      while (lc3 != NULL) {
+      while (lc3 != NULL && lc3->gettype()->name != NULL) {
 
         			std::string rrr(lc3->generate_code_right());
         			std::string lll(lc3->generate_code_left());
         			std::string all(lc3->generate_code());
 
-//        			std::cout << "ALL : " << all << std::endl;
+//        			std::cout << "\n\nALL : " << all << std::endl;
 //        			std::cout << "LEFT : " << lll << std::endl;
 //        			std::cout << "RIGHT : " << rrr << std::endl;
 

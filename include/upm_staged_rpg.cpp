@@ -380,7 +380,7 @@ double upm_staged_rpg::compute_rpg(){
 	state* trpg0 = new state(workingstate);
 
 
-	temporal_layers.push_back( std::make_pair( std::make_pair(trpg0, trpg0), curr_time) );
+	temporal_layers.push_back( std::make_pair( std::make_pair(trpg0, trpg0), mu_TIME.value()) );
 
 	init_facts = get_fact_layer(temp_ws);
 
@@ -402,7 +402,7 @@ double upm_staged_rpg::compute_rpg(){
 
 		StateCopy(workingstate, backup_state_lower);
 
-		curr_time += (10*mu_T);
+//		curr_time += (10*mu_T);
 
 		for (int ix = 0; ix < RULES_IN_WORLD; ix++){
 
@@ -470,7 +470,7 @@ double upm_staged_rpg::compute_rpg(){
 		update_upper_bound(bounds);
 		update_upper_bound(goal_bounds);
 
-		temporal_layers.push_back(std::make_pair(std::make_pair(trpg_l, trpg_u), curr_time));
+		temporal_layers.push_back(std::make_pair(std::make_pair(trpg_l, trpg_u), mu_TIME.value()));
 
 //		print_bounds();
 
@@ -481,8 +481,9 @@ double upm_staged_rpg::compute_rpg(){
 			break;
 		}
 
+
 		if (
-				mu_TIME > args->SRPG_horizon.value
+				(mu_TIME.value() > args->SRPG_horizon.value)
 			){
 
 				StateCopy(workingstate, temp_ws);
@@ -497,6 +498,7 @@ double upm_staged_rpg::compute_rpg(){
 				delete temp_ws;
 				delete trpg_u;
 				delete trpg_l;
+//				cout << "\n\nENDING THE LOOP WITH NO GOAL!\n\n" << endl;
 				return 999;
 		}
 
@@ -564,6 +566,10 @@ double upm_staged_rpg::compute_rpg(){
 
 		if (backwards.size() == 0) break;
 
+	}
+
+	if (ha.size() < 1){
+		ha.insert(0);
 	}
 
 	for (int i = 1; i < rpg_final_all.size()-1; i++){

@@ -73,19 +73,15 @@ Note, that this process will have to be repeated for every problem, as the C++ m
    To permanently add the heuristics, the `src/cpp_code.cpp` needs to be edited. This class generates the C++ code of the model. 
    Inside the `void make_print_world(...)` method, replace the following:
    
-      `"  upm_staged_rpg::getInstance().clear_all();\n"	
-       "  double h_val = upm_staged_rpg::getInstance().compute_rpg();\n\n"`
+      "  upm_staged_rpg::getInstance().clear_all();\n"	
+      "  double h_val = upm_staged_rpg::getInstance().compute_rpg();\n\n"
    
    with your own function (as above), remebering to surround the function with your quotation marks, e.g.:
    
-      `"  double h_val = (1 - mu_x) + 0.1;"\n\n`
+      "  double h_val = (1 - mu_x) + 0.1;\n\n"
       
-   After modifying the cpp_code.cpp file, DiNo needs to be recompiled:
+   After modifying the cpp_code.cpp file, DiNo needs to be recompiled. From inside the src directory: `make cleanall; make`
       
-      `cd src
-       make cleanall      
-       make`
-   
    After this change, DiNo's default heuristic will be the new user-defined heuristic, i.e. no need to modify the C++ model files for each problem. 
    
 

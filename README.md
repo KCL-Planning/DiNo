@@ -49,6 +49,48 @@ Assuming you are in the ex/linear-generator directory:
 * Specific Settings, 2Gb RAM, plan duration limited to 50 time units and PDDL+ verbose mode (includes values for the state variable):  
    `./generator_planner -m2000 -tl50 -format:pddlvv`
 
+### Using Domain Specific Heuristics in DiNo
+
+DiNo is equipped with a domain-independent heuristic, the SRPG+. However, domain-specific heuristics can be easily implemented in DiNo as well. There are two ways of implementing custom heuristics, temporary and permanent. 
+
+**Temporary**
+
+   Once the model is compiled into a C++ file (i.e. `<domain_name>.cpp` in the subfolders of the `ex` directory), the user can edit the method `void world_class::set_h_val()` and insert their own heuristics there. Simply comment out the following lines 
+   
+   `upm_staged_rpg::getInstance().clear_all();
+    double h_val = upm_staged_rpg::getInstance().compute_rpg();`
+   
+and replace them with your own function for calculating the heuristic, e.g.:
+   `double h_val = (1 - mu_x) + 0.1;` (note that `x` needs to be a numeric function in the PDDL domain).
+   
+After saving the changes in the C++ model, the model needs to be recompiled. 
+IMPORTANT: do not use the `--force` flag when compiling the model after adding your heuristics, it will recompile the model from scratch and rewrite your changes with the default heuristics. 
+
+Note, that this process will have to be repeated for every problem, as the C++ model file will be generated for each different problem file. Compiling a different problem file will cause you to lose your changes in the C++ file.
+
+**Permanent**
+
+   To permanently add the heuristics, the `src/cpp_code.cpp` needs to be edited. This class generates the C++ code of the model. 
+   Inside the `void make_print_world(...)` method, replace the following:
+   
+      `"  upm_staged_rpg::getInstance().clear_all();\n"	
+       "  double h_val = upm_staged_rpg::getInstance().compute_rpg();\n\n"`
+   
+   with your own function (as above), remebering to surround the function with your quotation marks, e.g.:
+   
+      `"  double h_val = (1 - mu_x) + 0.1;"\n\n`
+      
+   After modifying the cpp_code.cpp file, DiNo needs to be recompiled:
+      
+      `cd src
+       make cleanall      
+       make`
+   
+   After this change, DiNo's default heuristic will be the new user-defined heuristic, i.e. no need to modify the C++ model files for each problem. 
+   
+
+
+
 ### Papers on DiNo and UPMurphi
 
 * Wiktor Piotrowski, Maria Fox, Derek Long, Daniele Magazzeni, Fabio Mercorio *"Heuristic Planning for PDDL+ Domains"* (2016) (Proceedings of 25th International Joint Conference on Artificial Intelligence (IJCAI 2016), 9-15/6/2016)

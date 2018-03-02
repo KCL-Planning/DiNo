@@ -1,6 +1,6 @@
 
 # choice of compilers
-CPLUSPLUS = g++
+CXX = g++
 FLEX = flex++
 #FLEX = flex-+
 BYACC = bison
@@ -20,17 +20,17 @@ OBJS = 	pddl+.o \
 	ptree.o
 	
 pddl2upm: pddl+.o parse.o ptree.o
-	$(CPLUSPLUS) -g $(OBJS) -o pddl2upm  $(CFLAGS)
+	$(CXX) -g $(OBJS) -o pddl2upm  $(CFLAGS)
 	mv pddl2upm ../../$(PDDL_PARSER_DIR)
 
 pddl+.o: pddl+.cpp lex.yy.cc
-	$(CPLUSPLUS) -c pddl+.cpp  $(CFLAGS)
+	$(CXX) -c pddl+.cpp  $(CFLAGS)
 
 parse.o: parse.cpp
-	$(CPLUSPLUS) -c parse.cpp  $(CFLAGS)
+	$(CXX) -c parse.cpp  $(CFLAGS)
 
 ptree.o: ptree.cpp
-	$(CPLUSPLUS) -c ptree.cpp  $(CFLAGS)
+	$(CXX) -c ptree.cpp  $(CFLAGS)
 
 lex.yy.cc: pddl+.lex
 	$(FLEX) pddl+.lex
